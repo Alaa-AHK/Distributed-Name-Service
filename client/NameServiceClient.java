@@ -31,9 +31,6 @@ public class NameServiceClient implements AutoCloseable {
             closeException = e;
         }
         writer.close();
-        if (writer.checkError() && closeException == null) {
-            closeException = new IOException("I/O error detected while closing client output stream");
-        }
         try {
             socket.close();
         } catch (IOException e) {

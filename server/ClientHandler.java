@@ -18,8 +18,9 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try (
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)
+            Socket clientSocket = socket;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)
         ) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -28,12 +29,6 @@ public class ClientHandler implements Runnable {
             }
         } catch (IOException e) {
             System.err.println("Client connection error: " + e.getMessage());
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                System.err.println("Error closing client socket: " + e.getMessage());
-            }
         }
     }
 
