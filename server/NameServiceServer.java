@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class NameServiceServer {
     private static final int PORT = 5000;
@@ -27,7 +28,15 @@ public class NameServiceServer {
         } catch (IOException e) {
             System.err.println("Server error: " + e.getMessage());
         } finally {
-            executorService.shutdownNow();
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }

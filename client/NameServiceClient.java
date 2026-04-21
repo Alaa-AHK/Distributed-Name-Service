@@ -31,6 +31,9 @@ public class NameServiceClient implements AutoCloseable {
             closeException = e;
         }
         writer.close();
+        if (writer.checkError() && closeException == null) {
+            closeException = new IOException("Writer closed with errors");
+        }
         try {
             socket.close();
         } catch (IOException e) {

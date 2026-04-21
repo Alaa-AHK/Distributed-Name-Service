@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Registry {
-    private final Map<String, String> nameToIp = new HashMap<String, String>();
-    private final Map<String, String> ipToName = new HashMap<String, String>();
+    private final Map<String, String> nameToIp = new HashMap<>();
+    private final Map<String, String> ipToName = new HashMap<>();
 
     public synchronized String register(String name, String ip) {
         if (name == null || ip == null || name.trim().isEmpty() || ip.trim().isEmpty()) {
