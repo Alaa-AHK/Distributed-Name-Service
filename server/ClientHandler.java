@@ -31,7 +31,8 @@ public class ClientHandler implements Runnable {
         } finally {
             try {
                 socket.close();
-            } catch (IOException ignored) {
+            } catch (IOException e) {
+                System.err.println("Error closing client socket: " + e.getMessage());
             }
         }
     }
