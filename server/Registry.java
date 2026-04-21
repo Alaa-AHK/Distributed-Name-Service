@@ -1,10 +1,11 @@
 package server;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Registry {
-    private final ConcurrentHashMap<String, String> nameToIp = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, String> ipToName = new ConcurrentHashMap<>();
+    private final Map<String, String> nameToIp = new HashMap<String, String>();
+    private final Map<String, String> ipToName = new HashMap<String, String>();
 
     public synchronized String register(String name, String ip) {
         if (name == null || ip == null || name.trim().isEmpty() || ip.trim().isEmpty()) {

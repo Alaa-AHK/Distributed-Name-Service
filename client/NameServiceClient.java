@@ -24,6 +24,22 @@ public class NameServiceClient implements AutoCloseable {
 
     @Override
     public void close() throws IOException {
-        socket.close();
+        IOException closeException = null;
+        try {
+            reader.close();
+        } catch (IOException e) {
+            closeException = e;
+        }
+        writer.close();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            if (closeException == null) {
+                closeException = e;
+            }
+        }
+        if (closeException != null) {
+            throw closeException;
+        }
     }
 }
