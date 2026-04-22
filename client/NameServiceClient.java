@@ -5,24 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-/**
- * NameServiceClient.java
- *
- * This class is the CLIENT-SIDE library. Think of it as a simple API
- * that wraps the raw socket communication into friendly method calls.
- *
- * Instead of manually sending text like "REGISTER DatabaseNode 192.168.1.50",
- * you just call: client.register("DatabaseNode", "192.168.1.50")
- *
- * HOW A CLIENT SOCKET WORKS:
- *
- *   new Socket(host, port) tries to connect to a server at the given
- *   host address and port number. If the server is running, the connection
- *   is established and you get a Socket object back.
- *
- *   Then you get an OutputStream to send data TO the server,
- *   and an InputStream to receive data FROM the server.
- *
+/*
  * LIFECYCLE:
  *   1. Create client → connects to server
  *   2. Call register/resolve/deregister → sends message, gets response
@@ -33,32 +16,21 @@ public class NameServiceClient {
     private Socket socket;          // The connection to the server
     private PrintWriter out;        // For sending messages to the server
     private BufferedReader in;      // For receiving responses from the server
-    private final String nodeName;  // Just for logging — who is this client?
+    private final String nodeName;  // For logging: who is this client?
 
-    /**
-     * Constructor: connects to the Name Service server.
-     *
-     * @param host      the server's IP or hostname (e.g., "localhost" or "192.168.1.10")
-     * @param port      the server's port (must match server — we use 5000)
-     * @param nodeName  a label for this client, used in print statements
-     */
     public NameServiceClient(String host, int port, String nodeName) throws Exception {
         this.nodeName = nodeName;
 
-        // This line is where the TCP connection is established.
-        // If the server isn't running, this throws a ConnectException.
+        // TCP connection
+        // throws a ConnectException if server is not running or unreachable.
         this.socket = new Socket(host, port);
-
-        // Wrap the raw byte streams in text-friendly readers/writers
         this.out = new PrintWriter(socket.getOutputStream(), true);
         this.in  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         System.out.println("[" + nodeName + "] Connected to Name Service at " + host + ":" + port);
     }
 
-    // -----------------------------------------------------------------------
-    // PUBLIC METHODS — these are what NodeSimulator calls
-    // -----------------------------------------------------------------------
+    // PUBLIC METHODS: what NodeSimulator calls
 
     /**
      * Sends a REGISTER command to the server.
@@ -90,9 +62,7 @@ public class NameServiceClient {
         return sendMessage("DEREGISTER " + serviceName);
     }
 
-    // -----------------------------------------------------------------------
-    // PRIVATE HELPER
-    // -----------------------------------------------------------------------
+    // PRIVATE HELPER METHODS
 
     /**
      * The core send-and-receive method.
@@ -104,7 +74,7 @@ public class NameServiceClient {
     private String sendMessage(String message) throws Exception {
         System.out.println("[" + nodeName + "] Sending:  " + message);
 
-        // Send the message (println adds a newline, which is our line delimiter)
+        // Send the message to the server
         out.println(message);
 
         // Wait for server's response
